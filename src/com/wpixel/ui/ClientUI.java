@@ -1,13 +1,19 @@
 package com.wpixel.ui;
 
+import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
-import java.awt.Image;
-import java.awt.Toolkit;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
+import java.awt.SystemTray;
+import java.awt.TrayIcon;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -17,6 +23,8 @@ import com.wpixel.panel.WindowPanel;
 public class ClientUI {
 
 	private JFrame frame;
+	private SystemTray systemTray; 
+	private TrayIcon trayIcon;
 
 	/**
 	 * 应用程序主函数
@@ -47,8 +55,8 @@ public class ClientUI {
 		frame = new JFrame();
 		frame.setBackground(Color.BLACK);
 		frame.setTitle("远程桌面");
-		Image imageIcon = Toolkit.getDefaultToolkit().getImage(getClass().getClassLoader().getResource("main/resources/images/icon.jpg"));  
-//		frame.setIconImage(imageIcon);
+		frame.setUndecorated(true);//去掉边框
+		frame.setIconImage(new ImageIcon("src/com/wpixel/images/icon.jpg").getImage());
 		/**设置大小*/
 		frame.setSize(UIProper.winWidth, UIProper.winHeight);
 		/**设置大小不可变*/
@@ -65,6 +73,49 @@ public class ClientUI {
 				if(num == JOptionPane.OK_OPTION){
 					System.exit(0);
 				}
+			}
+			@Override
+			public void windowIconified(WindowEvent e) {
+				// 判断系统是否支持系统托盘  
+				if (SystemTray.isSupported()) {
+					 if (systemTray==null) {  
+                         systemTray=SystemTray.getSystemTray();//创建系统托盘  
+                         if (trayIcon!=null) {  
+                             systemTray.remove(trayIcon);  
+                         }  
+                     }
+				}
+				//创建弹出式菜单  
+                PopupMenu popup = new PopupMenu();  
+                //主界面选项  
+                MenuItem mainMenuItem = new MenuItem("show");  
+                mainMenuItem.addActionListener(new ActionListener(){
+					public void actionPerformed(ActionEvent e) {
+						frame.setExtendedState(JFrame.NORMAL);
+					}  
+                });  
+                //退出程序选项  
+                MenuItem exitMenuItem = new MenuItem("exit");  
+                exitMenuItem.addActionListener(new ActionListener(){  
+                    public void actionPerformed(ActionEvent e) {  
+                        System.exit(0);  
+                    }  
+                }); 
+                popup.add(mainMenuItem);
+                popup.addSeparator();
+                popup.add(exitMenuItem);
+                trayIcon = new TrayIcon(new ImageIcon("src/com/wpixel/images/icon.jpg").getImage(), "longRangeControl", popup);
+                trayIcon.setImageAutoSize(true);  
+                trayIcon.addActionListener(new ActionListener() {  
+                    public void actionPerformed(ActionEvent e) { 
+                    	frame.setExtendedState(JFrame.NORMAL);
+                    }  
+                });  
+                try {  
+                    systemTray.add(trayIcon);  
+                } catch (AWTException e1) {  
+                    e1.printStackTrace();  
+                }  
 			}
 		});
 		//添加面板

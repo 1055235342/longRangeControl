@@ -39,13 +39,8 @@ public class WindowPanel extends JPanel {
 	class MyThread extends Thread{
 		public void run() {
 			while(true){
-				try {
-					Thread.sleep(100);
-					if(ClientRevAndSend.image != null){
-						bytes = ClientRevAndSend.image.getBytes();
-					}
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+				if(ClientRevAndSend.image != null){
+					bytes = ClientRevAndSend.image.getBytes();
 				}
 				repaint();
 			}
