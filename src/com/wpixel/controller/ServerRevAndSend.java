@@ -31,19 +31,21 @@ public class ServerRevAndSend extends SimpleChannelInboundHandler<Object> {
 		//获得一个屏幕的截图  
 		while(true){
 			BufferedImage image = new Robot().createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
-			BufferedImage cursor= ImageIO.read(new File("src/com/wpixel/images/icon_cursor.png"));//cursor.gif 是你的鼠标图片  
-			Point p = MouseInfo.getPointerInfo().getLocation(); 
-			image.createGraphics().drawImage(cursor, p.x, p.y, null);  
+//			BufferedImage cursor= ImageIO.read(new File("src/com/wpixel/images/icon_cursor.png"));//cursor.gif 是你的鼠标图片  
+//			Point p = MouseInfo.getPointerInfo().getLocation(); 
+//			image.createGraphics().drawImage(cursor, p.x, p.y, null);  
 			ByteArrayOutputStream stream = new ByteArrayOutputStream();
 			ImageIO.write(image, "png", stream);
 			image1.setBytes(stream.toByteArray());
 			image1.setLength(stream.toByteArray().length);
 			ctx.writeAndFlush(image1);
+			System.out.println("111");
 		}
 	}
 
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+		System.out.println("断开链接");
 		ctx.close();
 	}
 	

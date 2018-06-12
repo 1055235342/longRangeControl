@@ -11,13 +11,13 @@ import javax.swing.JPanel;
 import com.wpixel.controller.ClientRevAndSend;
 import com.wpixel.ui.UIProper;
 
-public class WindowPanel extends JPanel {
+public class PicPanel extends JPanel {
 
 	private static final long serialVersionUID = -6325576426375916444L;
 	
 	private byte[] bytes = null;
 	
-	public WindowPanel() {
+	public PicPanel() {
 		new MyThread().start();
 	}
 
@@ -26,9 +26,8 @@ public class WindowPanel extends JPanel {
 		try {
 			if(bytes != null){
 				InputStream input = new ByteArrayInputStream(bytes);
-				//new File(System.getProperty("user.dir")+"/src/main/resources/images/BG.jpeg")
 				Image image = ImageIO.read(input);
-				g.drawImage(image, 0, 0, UIProper.winWidth, UIProper.winHeight, null);
+				g.drawImage(image, 0, 0, UIProper.winWidth - 100, UIProper.winHeight - 100, null);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

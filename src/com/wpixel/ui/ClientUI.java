@@ -1,11 +1,9 @@
 package com.wpixel.ui;
 
-import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
-import java.awt.MenuItem;
-import java.awt.PopupMenu;
+import java.awt.FlowLayout;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
@@ -14,15 +12,21 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 
 import com.wpixel.main.Client;
-import com.wpixel.panel.WindowPanel;
+import com.wpixel.panel.PicPanel;
 
 public class ClientUI {
 
-	private JFrame frame;
+	public static JFrame frame;
 	private SystemTray systemTray; 
 	private TrayIcon trayIcon;
 
@@ -53,9 +57,7 @@ public class ClientUI {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBackground(Color.BLACK);
 		frame.setTitle("远程桌面");
-		frame.setUndecorated(true);//去掉边框
 		frame.setIconImage(new ImageIcon("src/com/wpixel/images/icon.jpg").getImage());
 		/**设置大小*/
 		frame.setSize(UIProper.winWidth, UIProper.winHeight);
@@ -71,58 +73,102 @@ public class ClientUI {
 			public void windowClosing(WindowEvent e) {
 				int num = JOptionPane.showConfirmDialog(null, "退出？", "提示", JOptionPane.OK_CANCEL_OPTION);
 				if(num == JOptionPane.OK_OPTION){
+					Client.close();
 					System.exit(0);
 				}
 			}
-			@Override
-			public void windowIconified(WindowEvent e) {
-				// 判断系统是否支持系统托盘  
-				if (SystemTray.isSupported()) {
-					 if (systemTray==null) {  
-                         systemTray=SystemTray.getSystemTray();//创建系统托盘  
-                         if (trayIcon!=null) {  
-                             systemTray.remove(trayIcon);  
-                         }  
-                     }
-				}
-				//创建弹出式菜单  
-                PopupMenu popup = new PopupMenu();  
-                //主界面选项  
-                MenuItem mainMenuItem = new MenuItem("show");  
-                mainMenuItem.addActionListener(new ActionListener(){
-					public void actionPerformed(ActionEvent e) {
-						frame.setExtendedState(JFrame.NORMAL);
-					}  
-                });  
-                //退出程序选项  
-                MenuItem exitMenuItem = new MenuItem("exit");  
-                exitMenuItem.addActionListener(new ActionListener(){  
-                    public void actionPerformed(ActionEvent e) {  
-                        System.exit(0);  
-                    }  
-                }); 
-                popup.add(mainMenuItem);
-                popup.addSeparator();
-                popup.add(exitMenuItem);
-                trayIcon = new TrayIcon(new ImageIcon("src/com/wpixel/images/icon.jpg").getImage(), "longRangeControl", popup);
-                trayIcon.setImageAutoSize(true);  
-                trayIcon.addActionListener(new ActionListener() {  
-                    public void actionPerformed(ActionEvent e) { 
-                    	frame.setExtendedState(JFrame.NORMAL);
-                    }  
-                });  
-                try {  
-                    systemTray.add(trayIcon);  
-                } catch (AWTException e1) {  
-                    e1.printStackTrace();  
-                }  
-			}
 		});
-		//添加面板
-		WindowPanel panel = new WindowPanel();
-		frame.getContentPane().add(panel, BorderLayout.CENTER);
 		/**设置显示*/
 		frame.setVisible(true);
+		//添加面板
+		JPanel window = new JPanel();
+		frame.getContentPane().add(window, BorderLayout.CENTER);
+		window.setLayout(new BorderLayout(0, 0));
+		
+		{
+			JPanel top = new JPanel();
+			top.setBounds(0, 0, 700, 100);
+			top.setBackground(new Color(135, 206, 250));
+			window.add(top, BorderLayout.NORTH);
+			top.setLayout(new FlowLayout(0, 0, 0));
+			JButton btn1 = new JButton("连接");
+			btn1.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					
+				}
+			});
+			btn1.setBorder(null);
+			btn1.setIcon(new ImageIcon("src/com/wpixel/images/0.png"));
+			top.add(btn1);
+			JButton btn2 = new JButton("关闭");
+			btn2.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Client.close();
+				}
+			});
+			btn2.setBorder(null);
+			btn2.setIcon(new ImageIcon("src/com/wpixel/images/1.png"));
+			top.add(btn2);
+			JButton btn3 = new JButton("");
+//			btn3.addActionListener(new TopMenuListener());
+			btn3.setBorder(null);
+			btn3.setIcon(new ImageIcon("src/com/wpixel/images/2.png"));
+			top.add(btn3);
+			JButton btn4 = new JButton("");
+//			btn4.addActionListener(new TopMenuListener());
+			btn4.setBorder(null);
+			btn4.setIcon(new ImageIcon("src/com/wpixel/images/3.png"));
+			top.add(btn4);
+		}
+		
+		{
+			JPanel left = new JPanel();
+			left.setBackground(Color.WHITE);
+			window.add(left, BorderLayout.WEST);
+			left.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+			
+			JTree tree = new JTree();
+			left.add(tree);
+			tree.setModel(new DefaultTreeModel(
+					new DefaultMutableTreeNode("JTree") {
+						{
+							DefaultMutableTreeNode node_1;
+							node_1 = new DefaultMutableTreeNode("sports");
+							node_1.add(new DefaultMutableTreeNode("basketball"));
+							node_1.add(new DefaultMutableTreeNode("soccer"));
+							node_1.add(new DefaultMutableTreeNode("football"));
+							node_1.add(new DefaultMutableTreeNode("hockey"));
+							add(node_1);
+							node_1 = new DefaultMutableTreeNode("food");
+							node_1.add(new DefaultMutableTreeNode("hot dogs"));
+							node_1.add(new DefaultMutableTreeNode("pizza"));
+							node_1.add(new DefaultMutableTreeNode("ravioli"));
+							node_1.add(new DefaultMutableTreeNode("bananas"));
+							add(node_1);
+						}
+					}
+					));
+			
+		}
+		
+		{
+			JPanel butten = new JPanel();
+			butten.setBackground(new Color(135, 206, 235));
+			window.add(butten, BorderLayout.SOUTH);
+			JLabel lblNewLabel = new JLabel("Copyright © 1999-2018, CSDN.NET, All Rights Reserved");
+			butten.add(lblNewLabel);
+		}
+		
+		{
+			JPanel right = new JPanel();
+			right.setBackground(Color.WHITE);
+			window.add(right, BorderLayout.EAST);
+		}
+		
+		{
+			PicPanel center = new PicPanel();
+			center.setBackground(Color.LIGHT_GRAY);
+			window.add(center, BorderLayout.CENTER);
+		}
 	}
-
 }

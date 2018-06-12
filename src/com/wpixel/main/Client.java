@@ -16,6 +16,7 @@ import io.netty.handler.timeout.ReadTimeoutHandler;
 
 public class Client {
 
+	private static ChannelFuture cf;
 	public static void start() {
 		EventLoopGroup workerGroup = new NioEventLoopGroup();
 		try {
@@ -46,5 +47,9 @@ public class Client {
 		} finally {
 			workerGroup.shutdownGracefully();
 		}
+	}
+	
+	public static void close(){
+		cf.channel().close();
 	}
 }
