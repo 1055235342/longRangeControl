@@ -14,6 +14,7 @@ import javax.imageio.ImageIO;
 
 import com.wpixel.mode.Image;
 
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -25,6 +26,12 @@ public class ServerRevAndSend extends SimpleChannelInboundHandler<Object> {
 		System.out.println("start up");
 	}
 
+	@Override
+	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+		System.out.println("主动断开链接");
+		ctx.close();
+	}
+	
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
 		Image image1 = (Image)msg;
@@ -39,13 +46,12 @@ public class ServerRevAndSend extends SimpleChannelInboundHandler<Object> {
 			image1.setBytes(stream.toByteArray());
 			image1.setLength(stream.toByteArray().length);
 			ctx.writeAndFlush(image1);
-			System.out.println("111");
 		}
 	}
 
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-		System.out.println("断开链接");
+		System.out.println("异常断开链接");
 		ctx.close();
 	}
 	

@@ -34,7 +34,7 @@ public class Client {
 				}
 			});
 			
-			ChannelFuture cf = b.connect("localhost", 5555).sync();
+			cf = b.connect("localhost", 5555).sync();
 			
 			Image image = new Image();
 			image.setBytes("start".getBytes());
